@@ -1,0 +1,63 @@
+/**
+
+Using circular buffer concept
+
+At one timestamp, multiple calls are possible.
+
+counter array tracks it. 
+
+hits will carry total overall hits.
+
+lastTimestamp -> last call time stamp -> Remember all calls will carry timestamps in increasing order, 
+hence entries which goes out of 5 mins window needs to deleted.
+
+Lastposition -> accurate index where last time stamp was used to capture hit. 
+
+Move method will update hits value relative to current timestamp. 
+**/
+
+https://leetcode.com/problems/design-hit-counter/
+
+class HitCounter {
+    int[] counters;
+    int N, lastPosition, lastTimestamp, hits;
+    
+    public HitCounter() {
+        this.N = 300;
+        this.counters = new int[N];
+    }
+    
+    public void hit(int timestamp) {
+        move(timestamp);
+        counters[lastPosition]++;
+        hits++;
+    }
+    
+    public int getHits(int timestamp) {
+         move(timestamp);
+         return hits;
+    }
+    
+    private void move(int timestamp) {
+        int gap = Math.min(timestamp - lastTimestamp, N);
+        
+        for(int i=0;i<gap;i++) {
+            lastPosition = (lastPosition+1)%N;
+            hits -= counters[lastPosition];
+            counters[lastPosition] = 0;
+        }
+        lastTimestamp = timestamp;
+    }
+}
+
+/**
+ * Your HitCounter object will be instantiated and called as such:
+ * HitCounter obj = new HitCounter();
+ * obj.hit(timestamp);
+ * int param_2 = obj.getHits(timestamp);
+ */
+
+
+
+
+
